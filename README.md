@@ -1,0 +1,1 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/bvar01gp4w3y8owm?svg=true)](https://ci.appveyor.com/project/Tatiana-Brener/task4-selenide-carddeliveryorder)
