@@ -19,12 +19,44 @@ public class CardDeliveryOrderTest {
     void shouldDeliverCardFormAllFieldsFilledCorrectly() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Казань");
+//        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
-        $("[data-test-id=notification] .notification__content").shouldBe(Condition.visible, Duration.ofMillis(15000)).shouldHave(Condition.exactText("Встреча успешно забронирована на " + inputData));
+        $("[data-test-id=notification] .notification__content").
+                shouldBe(Condition.visible, Duration.ofMillis(15000)).
+                shouldHave(Condition.exactText("Встреча успешно забронирована на " + inputData));
+    }
+
+    @Test
+    void shouldDeliverCardFormWithDataOfMeetingMoreThan3Days() {
+        open("http://localhost:9999");
+        $("[data-test-id='city'] input").setValue("Казань");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        $("[placeholder='Дата встречи']").setValue("15.02.2021");
+        $("[data-test-id='name'] .input__control").setValue("Иван Петров");
+        $("[data-test-id='phone'] .input__control").setValue("+79009990000");
+        $("[data-test-id='agreement'] .checkbox__box").click();
+        $(".grid-col button").click();
+        $("[data-test-id=notification] .notification__content").
+                shouldBe(Condition.visible, Duration.ofMillis(15000)).
+                shouldHave(Condition.exactText("Встреча успешно забронирована на " + "15.02.2021"));
+    }
+
+    @Test
+    void shouldNotDeliverCardFormWithDataOfMeetingLessThan3Days() {
+        open("http://localhost:9999");
+        $("[data-test-id='city'] input").setValue("Казань");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        $("[placeholder='Дата встречи']").setValue("09.02.2021");
+        $("[data-test-id='name'] .input__control").setValue("Иван Петров");
+        $("[data-test-id='phone'] .input__control").setValue("+79009990000");
+        $("[data-test-id='agreement'] .checkbox__box").click();
+        $(".grid-col button").click();
+        $("[data-test-id=date] .input_invalid .input__sub").
+                shouldHave(Condition.exactText("Заказ на выбранную дату невозможен"));
     }
 
     @Test
@@ -36,7 +68,8 @@ public class CardDeliveryOrderTest {
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
-        $("[data-test-id=city] .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+        $(".input_invalid[data-test-id=city] .input__sub").
+                shouldHave(Condition.exactText("Поле обязательно для заполнения"));
     }
 
     @Test
@@ -48,7 +81,8 @@ public class CardDeliveryOrderTest {
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
-        $("[data-test-id=city] .input__sub").shouldHave(Condition.exactText("Доставка в выбранный город недоступна"));
+        $(".input_invalid[data-test-id=city] .input__sub").
+                shouldHave(Condition.exactText("Доставка в выбранный город недоступна"));
     }
 
     @Test
@@ -60,7 +94,8 @@ public class CardDeliveryOrderTest {
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
-        $("[data-test-id=name] .input__sub").shouldHave(Condition.exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+        $(".input_invalid[data-test-id=name] .input__sub").shouldHave(Condition.
+                exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
     }
 
     @Test
@@ -72,7 +107,8 @@ public class CardDeliveryOrderTest {
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
-        $("[data-test-id=name] .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+        $(".input_invalid[data-test-id=name] .input__sub").
+                shouldHave(Condition.exactText("Поле обязательно для заполнения"));
     }
 
     @Test
@@ -84,7 +120,8 @@ public class CardDeliveryOrderTest {
         $("[data-test-id='phone'] .input__control").setValue("89009000000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
-        $("[data-test-id=phone] .input__sub").shouldHave(Condition.exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
+        $(".input_invalid[data-test-id=phone] .input__sub").
+                shouldHave(Condition.exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
     }
 
     @Test
@@ -96,18 +133,20 @@ public class CardDeliveryOrderTest {
         $("[data-test-id='phone'] .input__control").setValue("");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
-        $("[data-test-id=phone] .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+        $(".input_invalid[data-test-id=phone] .input__sub").
+                shouldHave(Condition.exactText("Поле обязательно для заполнения"));
     }
 
     @Test
-    void shouldNotDeliverCardFormIfCheckboxNotClic() {
+    void shouldNotDeliverCardFormIfCheckboxNotClick() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Москва");
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
-        $("[data-test-id='phone'] .input__control").setValue("");
+        $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box");
         $(".grid-col button").click();
-        $("[data-test-id='agreement'] .checkbox__text").shouldHave(Condition.exactText("Я соглашаюсь с условиями обработки и использования моих персональных данных"));
+        $(".input_invalid[data-test-id=agreement] .checkbox__text").shouldHave
+                (Condition.exactText("Я соглашаюсь с условиями обработки и использования моих персональных данных"));
     }
 }
