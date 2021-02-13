@@ -19,7 +19,6 @@ public class CardDeliveryOrderTest {
     void shouldDeliverCardFormAllFieldsFilledCorrectly() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Казань");
-//        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
@@ -34,21 +33,23 @@ public class CardDeliveryOrderTest {
     void shouldDeliverCardFormWithDataOfMeetingMoreThan3Days() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Казань");
+        $("[placeholder='Дата встречи']").setValue(inputData);
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
-        $("[placeholder='Дата встречи']").setValue("15.02.2021");
+        $("[placeholder='Дата встречи']").setValue("20.02.2021");
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
         $("[data-test-id=notification] .notification__content").
                 shouldBe(Condition.visible, Duration.ofMillis(15000)).
-                shouldHave(Condition.exactText("Встреча успешно забронирована на " + "15.02.2021"));
+                shouldHave(Condition.exactText("Встреча успешно забронирована на " + "20.02.2021"));
     }
 
     @Test
     void shouldNotDeliverCardFormWithDataOfMeetingLessThan3Days() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Казань");
+        $("[placeholder='Дата встречи']").setValue(inputData);
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").setValue("09.02.2021");
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
