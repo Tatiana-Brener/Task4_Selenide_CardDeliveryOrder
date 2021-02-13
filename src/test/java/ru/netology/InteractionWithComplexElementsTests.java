@@ -53,13 +53,15 @@ public class InteractionWithComplexElementsTests {
         $$(" .menu-item__control").find(Condition.exactText("Санкт-Петербург")).click();
         $(".calendar-input__custom-control [type=button]").click();
         SelenideElement blockCalendar = $(".popup__container .calendar");
-        blockCalendar.$$(".calendar__day").find(Condition.exactText("16")).click();
+        blockCalendar.$("[data-step='1']").doubleClick();
+        blockCalendar.$(".calendar__name").shouldHave(Condition.exactText("Апрель 2021"));
+        blockCalendar.$$(".calendar__day").find(Condition.exactText("3")).click();
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
         $("[data-test-id=notification] .notification__content").
                 shouldBe(Condition.visible, Duration.ofMillis(15000)).
-                shouldHave(Condition.exactText("Встреча успешно забронирована на " + "16.02.2021"));
+                shouldHave(Condition.exactText("Встреча успешно забронирована на " + "03.04.2021"));
     }
 }
