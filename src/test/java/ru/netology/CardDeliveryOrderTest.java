@@ -12,13 +12,14 @@ import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class CardDeliveryOrderTest {
-    LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
-    String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
     @Test
     void shouldDeliverCardFormAllFieldsFilledCorrectly() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Казань");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
@@ -30,27 +31,29 @@ public class CardDeliveryOrderTest {
     }
 
     @Test
-    void shouldDeliverCardFormWithDataOfMeetingMoreThan3Days() {
+    void shouldDeliverCardFormWithDataOfMeetingMorePlus3Days() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Казань");
-        $("[placeholder='Дата встречи']").setValue(inputData);
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
-        $("[placeholder='Дата встречи']").setValue("20.02.2021");
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(".grid-col button").click();
         $("[data-test-id=notification] .notification__content").
                 shouldBe(Condition.visible, Duration.ofMillis(15000)).
-                shouldHave(Condition.exactText("Встреча успешно забронирована на " + "20.02.2021"));
+                shouldHave(Condition.exactText("Встреча успешно забронирована на " + inputData));
     }
 
     @Test
-    void shouldNotDeliverCardFormWithDataOfMeetingLessThan3Days() {
+    void shouldNotDeliverCardFormWithDataOfMeetingLessThanInputData() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Казань");
-        $("[placeholder='Дата встречи']").setValue(inputData);
         $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue("09.02.2021");
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
@@ -61,9 +64,29 @@ public class CardDeliveryOrderTest {
     }
 
     @Test
+    void shouldDeliverCardFormWithDataOfMeetingMorePlus14Days() {
+        open("http://localhost:9999");
+        $("[data-test-id='city'] input").setValue("Казань");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(14);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        $("[placeholder='Дата встречи']").setValue(inputData);
+        $("[data-test-id='name'] .input__control").setValue("Иван Петров");
+        $("[data-test-id='phone'] .input__control").setValue("+79009990000");
+        $("[data-test-id='agreement'] .checkbox__box").click();
+        $(".grid-col button").click();
+        $("[data-test-id=notification] .notification__content").
+                shouldBe(Condition.visible, Duration.ofMillis(15000)).
+                shouldHave(Condition.exactText("Встреча успешно забронирована на " + inputData));
+    }
+
+    @Test
     void shouldNotDeliverCardFormIfFieldCityIsEmpty() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
@@ -77,6 +100,9 @@ public class CardDeliveryOrderTest {
     void shouldNotDeliverCardFormIfCityIsNotFromRF() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("City");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
@@ -90,6 +116,9 @@ public class CardDeliveryOrderTest {
     void shouldNotDeliverCardFormIfFieldNameIsIncorrect() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Москва");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Ivan Petrov");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
@@ -103,6 +132,9 @@ public class CardDeliveryOrderTest {
     void shouldNotDeliverCardFormIfFieldNameIsEmpty() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Москва");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
@@ -116,6 +148,9 @@ public class CardDeliveryOrderTest {
     void shouldNotDeliverCardFormIfFieldPhoneIsIncorrect() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Москва");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("89009000000");
@@ -129,6 +164,9 @@ public class CardDeliveryOrderTest {
     void shouldNotDeliverCardFormIfFieldPhoneIsEmpty() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Москва");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("");
@@ -142,6 +180,9 @@ public class CardDeliveryOrderTest {
     void shouldNotDeliverCardFormIfCheckboxNotClick() {
         open("http://localhost:9999");
         $("[data-test-id='city'] input").setValue("Москва");
+        $("[placeholder='Дата встречи']").doubleClick().sendKeys(Keys.BACK_SPACE);
+        LocalDate dataOfMeeting = LocalDate.now().plusDays(3);
+        String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[placeholder='Дата встречи']").setValue(inputData);
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
