@@ -58,7 +58,7 @@ public class InteractionWithComplexElementsTests {
         String inputData = dataOfMeeting.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $(".calendar-input__custom-control [type=button]").click();
         SelenideElement blockCalendar = $(".popup__container .calendar");
-        blockCalendar.$(".popup__container .calendar__day[data-day='1613682000000']").click();
+        blockCalendar.$(".calendar__day[data-day='1613682000000']").click();
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
@@ -80,7 +80,7 @@ public class InteractionWithComplexElementsTests {
         SelenideElement blockCalendar = $(".popup__container .calendar");
         blockCalendar.$("[data-step='1']").click();
         blockCalendar.$(".calendar__name").shouldHave(Condition.exactText("Март 2021"));
-        blockCalendar.$(".popup__container .calendar__day[data-day='1614891600000']").click();
+        blockCalendar.$(".calendar__day[data-day='1614891600000']").click();
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
