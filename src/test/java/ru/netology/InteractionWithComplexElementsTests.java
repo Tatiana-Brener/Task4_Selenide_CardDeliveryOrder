@@ -23,15 +23,11 @@ public class InteractionWithComplexElementsTests {
         LocalDate dataOfMeetingNotDefault = LocalDate.now().plusDays(7);
         String inputData = dataOfMeetingNotDefault.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         int inputDayOfMounth = dataOfMeetingNotDefault.getDayOfMonth();
-        if (dataOfMeetingDefault.getMonthValue() == dataOfMeetingNotDefault.getMonthValue()) {
-            $$(".popup__container .calendar .calendar__day").
-                    find(Condition.exactText(String.valueOf(inputDayOfMounth))).click();
-        }
         if (dataOfMeetingDefault.getMonthValue() != dataOfMeetingNotDefault.getMonthValue()) {
             $(".calendar__arrow_direction_right[data-step='1']").click();
-            $$(".popup__container .calendar .calendar__day").
-                    find(Condition.exactText(String.valueOf(inputDayOfMounth))).click();
         }
+        $$(".popup__container .calendar .calendar__day").
+                find(Condition.exactText(String.valueOf(inputDayOfMounth))).click();
         $("[data-test-id='name'] .input__control").setValue("Иван Петров");
         $("[data-test-id='phone'] .input__control").setValue("+79009990000");
         $("[data-test-id='agreement'] .checkbox__box").click();
